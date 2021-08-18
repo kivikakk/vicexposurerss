@@ -55,6 +55,12 @@ def merge(database, entries)
   end
 end
 
+def parse_time(entry)
+  # XXX: screwy around DST change.  And I just bet I will still be relying
+  # on this when it does change over, huh.  :|
+  Time.parse(entry.Added_date_dtm + "T" + entry.Added_time)
+end
+
 Dir.chdir(__dir__)
 
 ### Fetch.
@@ -83,10 +89,7 @@ File.write("database", database.to_json)
 
 ### Write RSS, HTML.
 
-first = database[-1]
-# XXX: screwy around DST change.  And I just bet I will still be relying
-# on this when it does change over, huh.  :|
-last_updated = Time.parse(first.Added_date_dtm + "T" + first.Added_time)
+last_updated = parse_time(database[-1])
 
 
 rss = RSS::Maker.make("atom") do |maker|
@@ -105,14 +108,14 @@ rss = RSS::Maker.make("atom") do |maker|
 
       summary = []
       summary << %i(Site_streetaddress Suburb Site_postcode).map { |e| entry.send(e) }.compact.join(", ")
-      summary << entry.Exposure_time
+      summary << "#{entry.Exposure_date_dtm}, #{entry.Exposure_time}"
       summary << entry.Advice_title.scan(/Tier \d/)[0]
       summary << entry.Notes
       summary << "Added #{entry.Added_date_dtm} #{entry.Added_time}"
 
       item.summary = summary.map { |e| e.gsub(/\.\z/, "") }.join(". ") + "."
       item.link = "https://www.coronavirus.vic.gov.au/exposure-sites##{entry.database_id}"
-      item.updated = Time.now.to_s
+      item.updated = parse_time(entry)
     end
   end
 end
