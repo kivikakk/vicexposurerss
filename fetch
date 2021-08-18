@@ -15,7 +15,7 @@ if File.exists?("cache") && File.mtime("cache") > Time.now - 60 * 60
   data = File.read("cache")
 else
   STDERR.puts "fetching new"
-  data = HTTParty.get(URL)
+  data = HTTParty.get(URL).body
   File.open("cache", "w") { |f| f.write(data) }
 end
 
