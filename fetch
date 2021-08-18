@@ -10,10 +10,57 @@ require 'nokogiri'
 require 'rss'
 require 'time'
 
+class Entry
+  ITEMS = %w(
+    Suburb Site_title Site_streetaddress Site_postcode
+    Exposure_date_dtm Exposure_time
+    Advice_title Notes
+    Added_date_dtm Added_time
+  )
+  attr_accessor *ITEMS
+
+  attr_accessor :database_id
+
+  def initialize(record)
+    ITEMS.each do |i|
+      instance_variable_set(:"@#{i}", record[i])
+    end
+  end
+
+  def hash
+    pod.hash
+  end
+
+  def eql?(rhs)
+    pod.eql?(rhs.pod)
+  end
+
+  def pod
+    Hash[ITEMS.map { |i| [i, instance_variable_get(:"@#{i}")] }]
+  end
+
+  def to_json(opts=nil)
+    pod.to_json(opts)
+  end
+end
+
+def merge(database, entries)
+  # Add entries to end of database where not present in database.
+  extant = Set.new
+  database.each { |e| extant << e }
+  entries.each do |e|
+    if !extant.include?(e)
+      database << e
+    end
+  end
+end
+
 Dir.chdir(__dir__)
 
-if File.exists?("cache") && File.mtime("cache") > Time.now - 60 * 60
-  STDERR.puts "using cache"
+### Fetch.
+
+if ENV["USE_HTTP_CACHE"] == "1" && File.exists?("cache") && File.mtime("cache") > Time.now - 60 * 60
+  STDERR.puts "using HTTP cache"
   data = File.read("cache")
 else
   STDERR.puts "fetching new"
@@ -25,10 +72,22 @@ data = JSON.parse(data)
 
 exit 2 unless data["success"]
 
-first = data["result"]["records"][0]
+
+### Maintain database.
+
+database = File.exists?("database") ? JSON.parse(File.read("database")).map { |r| Entry.new(r) } : []
+merge(database, data["result"]["records"].map { |r| Entry.new(r) }.reverse)
+database.each.with_index { |e, i| e.database_id = i + 1 }
+File.write("database", database.to_json)
+
+
+### Write RSS, HTML.
+
+first = database[-1]
 # XXX: screwy around DST change.  And I just bet I will still be relying
 # on this when it does change over, huh.  :|
-last_updated = Time.parse(first["Added_date_dtm"] + "T" + first["Added_time"])
+last_updated = Time.parse(first.Added_date_dtm + "T" + first.Added_time)
+
 
 rss = RSS::Maker.make("atom") do |maker|
   maker.channel.authors.new_author do |author|
@@ -40,19 +99,19 @@ rss = RSS::Maker.make("atom") do |maker|
   maker.channel.about = "https://vicexposurerss.kivikakk.ee"
   maker.channel.title = "Victorian coronavirus exposure sites"
 
-  data["result"]["records"].each do |record|
+  database.reverse_each.with_index do |entry, i|
     maker.items.new_item do |item|
-      item.title = "#{record["Suburb"]} — #{record["Site_title"]} (#{record["Exposure_date_dtm"]})"
+      item.title = "#{entry.Suburb} — #{entry.Site_title} (#{entry.Exposure_date_dtm})"
 
       summary = []
-      summary << %w(Site_streetaddress Suburb Site_postcode).map { |e| record[e] }.compact.join(", ")
-      summary << record["Exposure_time"]
-      summary << record["Advice_title"].scan(/Tier \d/)[0]
-      summary << record["Notes"]
-      summary << "Added #{record["Added_date_dtm"]} #{record["Added_time"]}"
+      summary << %i(Site_streetaddress Suburb Site_postcode).map { |e| entry.send(e) }.compact.join(", ")
+      summary << entry.Exposure_time
+      summary << entry.Advice_title.scan(/Tier \d/)[0]
+      summary << entry.Notes
+      summary << "Added #{entry.Added_date_dtm} #{entry.Added_time}"
 
       item.summary = summary.map { |e| e.gsub(/\.\z/, "") }.join(". ") + "."
-      item.link = "https://www.coronavirus.vic.gov.au/exposure-sites"
+      item.link = "https://www.coronavirus.vic.gov.au/exposure-sites##{entry.database_id}"
       item.updated = Time.now.to_s
     end
   end
