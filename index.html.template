@@ -1,0 +1,14 @@
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Victorian Coronavirus exposure sites RSS feed</title>
+</head>
+<body>
+	<h1>Victorian Coronavirus exposure sites RSS feed</h1>
+
+	<p><a href="atom.xml">Atom feed</a> (last updated: <span id="last-updated"></span>)</p>
+	<p><a href="https://github.com/kivikakk/vicexposurerss">Source code on GitHub</a></p>
+	<p><a href="https://www.coronavirus.vic.gov.au/exposure-sites">Data source</a></p>
+	<p><a href="https://kivikakk.ee">Author website</a></p>
+</body>
+<html>

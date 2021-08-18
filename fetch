@@ -1,0 +1,69 @@
+#!/usr/bin/env ruby
+
+URL = "https://www.coronavirus.vic.gov.au/sdp-ckan?resource_id=afb52611-6061-4a2b-9110-74c920bede77&limit=10000"
+
+require 'httparty'
+require 'json'
+require 'nokogiri'
+require 'rss'
+require 'time'
+
+Dir.chdir(__dir__)
+
+if File.exists?("cache") && File.mtime("cache") > Time.now - 60 * 60
+  STDERR.puts "using cache"
+  data = File.read("cache")
+else
+  STDERR.puts "fetching new"
+  data = HTTParty.get(URL)
+  File.open("cache", "w") { |f| f.write(data) }
+end
+
+data = JSON.parse(data)
+
+exit 2 unless data["success"]
+
+first = data["result"]["records"][0]
+# XXX: screwy around DST change.  And I just bet I will still be relying
+# on this when it does change over, huh.  :|
+last_updated = Time.parse(first["Added_date_dtm"] + "T" + first["Added_time"])
+
+rss = RSS::Maker.make("atom") do |maker|
+  maker.channel.authors.new_author do |author|
+    author.name = "Asherah Connor"
+    author.uri = "https://kivikakk.ee"
+    author.email = "ashe@kivikakk.ee"
+  end
+  maker.channel.updated = last_updated
+  maker.channel.about = "https://vicexposurerss.kivikakk.ee"
+  maker.channel.title = "Victorian coronavirus exposure sites"
+
+  data["result"]["records"].each do |record|
+    maker.items.new_item do |item|
+      item.title = "#{record["Suburb"]} — #{record["Site_title"]} (#{record["Exposure_date_dtm"]})"
+
+      summary = []
+      summary << %w(Site_streetaddress Suburb Site_postcode).map { |e| record[e] }.compact.join(", ")
+      summary << record["Exposure_time"]
+      summary << record["Advice_title"].scan(/Tier \d/)[0]
+      summary << record["Notes"]
+      summary << "Added #{record["Added_date_dtm"]} #{record["Added_time"]}"
+
+      item.summary = summary.map { |e| e.gsub(/\.\z/, "") }.join(". ") + "."
+      item.link = "https://www.coronavirus.vic.gov.au/exposure-sites"
+      item.updated = Time.now.to_s
+    end
+  end
+end
+
+Dir.mkdir "www" unless File.exists?("www")
+File.open("www/atom.xml.new", "w") { |f| f.write(rss) }
+File.rename("www/atom.xml.new", "www/atom.xml")
+
+template = File.read("index.html.template")
+doc = Nokogiri::HTML(template)
+
+(doc/"#last-updated")[0].content = last_updated
+
+File.open("www/index.html.new", "w") { |f| f.write(doc.to_html) }
+File.rename("www/index.html.new", "www/index.html")
