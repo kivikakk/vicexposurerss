@@ -12,7 +12,8 @@
 	<p>
 		<a href="atom.xml">Atom feed</a><br>
 		Latest exposure site added: <span id="latest-exposure-site"></span><br>
-		Last checked: <span id="last-checked"></span>
+		Last checked: <span id="last-checked"></span><br>
+		Checking for updates on every half hour
 	</p>
 
 	<p>
