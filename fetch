@@ -118,7 +118,7 @@ rss = RSS::Maker.make("atom") do |maker|
       summary = []
       summary << %i(Site_streetaddress Suburb Site_postcode).map { |e| entry.send(e) }.compact.join(", ")
       summary << "#{entry.Exposure_date_dtm}, #{entry.Exposure_time}"
-      summary << entry.Advice_title.scan(/Tier \d/)[0]
+      summary << entry.Advice_title.scan(/Tier \d/)[0] if entry.Advice_title
       summary << entry.Notes
       summary << "Added #{entry.Added_date_dtm} #{entry.Added_time}"
 
