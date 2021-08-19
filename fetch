@@ -114,6 +114,14 @@ rss = RSS::Maker.make("atom") do |maker|
       summary << "Added #{entry.Added_date_dtm} #{entry.Added_time}"
 
       item.summary = summary.map { |e| e.gsub(/\.\z/, "") }.join(". ") + "."
+
+      item.content.type = "xhtml"
+      doc = Nokogiri::XML("<div></div>")
+      summary.each do |line|
+        doc.root.add_child(doc.create_element("p")).content = line
+      end
+      item.content.xml = doc.root.to_xhtml
+
       item.link = "https://www.coronavirus.vic.gov.au/exposure-sites##{entry.database_id}"
       item.updated = parse_time(entry)
     end
