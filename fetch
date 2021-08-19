@@ -72,7 +72,6 @@ if ENV["USE_HTTP_CACHE"] == "1" && File.exists?("cache") && File.mtime("cache") 
   STDERR.puts "using HTTP cache"
   data = File.read("cache")
 else
-  STDERR.puts "fetching new"
   data = HTTParty.get(URL).body
   File.open("cache", "w") { |f| f.write(data) }
 end
