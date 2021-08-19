@@ -38,5 +38,10 @@
 	<p><a href="https://github.com/kivikakk/vicexposurerss">Source code on GitHub</a></p>
 	<p><a href="https://www.coronavirus.vic.gov.au/exposure-sites">Data source</a></p>
 	<p><a href="https://kivikakk.ee">Author information</a> (<a href="https://www.youtube.com/watch?v=83cEEyTuAMM">previously</a>)</p>
+
+	<noscript>
+		<img src="https://analytics.kameliya.ee/ingress/0f516b8a-6021-4804-946b-419efc68a59a/pixel.gif">
+	</noscript>
+	<script defer src="https://analytics.kameliya.ee/ingress/0f516b8a-6021-4804-946b-419efc68a59a/script.js"></script>
 </body>
 <html>
