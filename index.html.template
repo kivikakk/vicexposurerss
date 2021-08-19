@@ -3,13 +3,25 @@
 	<meta charset="utf-8">
 	<title>Victorian Coronavirus exposure sites RSS feed</title>
 	<link rel="alternative" type="application/atom+xml" href="https://vicexposurerss.kivikakk.ee/atom.xml">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="styles.css">
 </head>
 <body>
 	<h1>Victorian Coronavirus exposure sites RSS feed</h1>
 
 	<p><a href="atom.xml">Atom feed</a> (last updated: <span id="last-updated"></span>)</p>
+	<p>
+		<strong>Note:</strong>
+		there are no unique identifiers given per listed exposure site/period.
+		As a result, I take a cautious stance and treat any change in any
+		displayed field as representing a new exposure and generate an entry
+		for it.
+		You may see the same exposure reappear as new if our friends at the
+		Department of Health twiddle spelling or addresses.
+	</p>
+
 	<p><a href="https://github.com/kivikakk/vicexposurerss">Source code on GitHub</a></p>
 	<p><a href="https://www.coronavirus.vic.gov.au/exposure-sites">Data source</a></p>
-	<p><a href="https://kivikakk.ee">Author website</a></p>
+	<p><a href="https://kivikakk.ee">Author information</a></p>
 </body>
 <html>
