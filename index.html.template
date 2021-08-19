@@ -9,7 +9,12 @@
 <body>
 	<h1>Victorian Coronavirus exposure sites RSS feed</h1>
 
-	<p><a href="atom.xml">Atom feed</a> (last updated: <span id="last-updated"></span>)</p>
+	<p>
+		<a href="atom.xml">Atom feed</a><br>
+		Latest exposure site added: <span id="latest-exposure-site"></span><br>
+		Last checked: <span id="last-checked"></span>
+	</p>
+
 	<p>
 		<strong>Note:</strong>
 		there are no unique identifiers given per listed exposure site/period.

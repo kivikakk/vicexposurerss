@@ -67,6 +67,7 @@ Dir.chdir(__dir__)
 
 ### Fetch.
 
+checked = Time.now
 if ENV["USE_HTTP_CACHE"] == "1" && File.exists?("cache") && File.mtime("cache") > Time.now - 60 * 60
   STDERR.puts "using HTTP cache"
   data = File.read("cache")
@@ -91,7 +92,8 @@ File.write("database", database.to_json)
 
 ### Write RSS, HTML.
 
-last_updated = database.max_by(&:parsed_added_time).parsed_added_time
+latest_exposure_site = database.max_by(&:parsed_added_time).parsed_added_time
+updated = Time.now.to_s
 
 rss = RSS::Maker.make("atom") do |maker|
   maker.channel.authors.new_author do |author|
@@ -99,7 +101,7 @@ rss = RSS::Maker.make("atom") do |maker|
     author.uri = "https://kivikakk.ee"
     author.email = "ashe@kivikakk.ee"
   end
-  maker.channel.updated = last_updated
+  maker.channel.updated = updated
   maker.channel.link = "https://vicexposurerss.kivikakk.ee"
   maker.channel.id = "https://vicexposurerss.kivikakk.ee"
   maker.channel.rights = "Data copyright © State Government of Victoria"
@@ -138,7 +140,8 @@ File.rename("www/atom.xml.new", "www/atom.xml")
 template = File.read("index.html.template")
 doc = Nokogiri::HTML(template)
 
-(doc/"#last-updated")[0].content = last_updated
+(doc/"#latest-exposure-site")[0].content = latest_exposure_site
+(doc/"#last-checked")[0].content = checked.to_s
 
 File.open("www/index.html.new", "w") { |f| f.write(doc.to_html) }
 File.rename("www/index.html.new", "www/index.html")
