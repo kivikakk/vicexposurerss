@@ -19,12 +19,14 @@ class Entry
   )
   attr_accessor *ITEMS
 
-  attr_accessor :database_id
+  attr_accessor :database_id, :parsed_added_time
 
   def initialize(record)
     ITEMS.each do |i|
       instance_variable_set(:"@#{i}", record[i])
     end
+
+    self.parsed_added_time = parse_time(self)
   end
 
   def hash
@@ -89,8 +91,7 @@ File.write("database", database.to_json)
 
 ### Write RSS, HTML.
 
-last_updated = parse_time(database[-1])
-
+last_updated = database.max_by(&:parsed_added_time).parsed_added_time
 
 rss = RSS::Maker.make("atom") do |maker|
   maker.channel.authors.new_author do |author|
