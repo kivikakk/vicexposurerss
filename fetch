@@ -100,7 +100,9 @@ rss = RSS::Maker.make("atom") do |maker|
     author.email = "ashe@kivikakk.ee"
   end
   maker.channel.updated = last_updated
-  maker.channel.about = "https://vicexposurerss.kivikakk.ee"
+  maker.channel.link = "https://vicexposurerss.kivikakk.ee"
+  maker.channel.id = "https://vicexposurerss.kivikakk.ee"
+  maker.channel.rights = "Data copyright © State Government of Victoria"
   maker.channel.title = "Victorian coronavirus exposure sites"
 
   database.reverse_each.with_index do |entry, i|
