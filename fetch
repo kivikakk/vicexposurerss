@@ -60,7 +60,7 @@ end
 def parse_time(entry)
   # XXX: screwy around DST change.  And I just bet I will still be relying
   # on this when it does change over, huh.  :|
-  Time.parse(entry.Added_date_dtm + "T" + entry.Added_time)
+  Time.parse(entry.Added_date_dtm + "T" + entry.Added_time) rescue nil
 end
 
 Dir.chdir(__dir__)
