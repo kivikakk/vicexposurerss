@@ -58,9 +58,13 @@ def merge(database, entries)
 end
 
 def parse_time(entry)
+  if entry.Added_time.nil?
+    # Sometimes this is nil.
+    entry.Added_time = "00:00:00"
+  end
   # XXX: screwy around DST change.  And I just bet I will still be relying
   # on this when it does change over, huh.  :|
-  Time.parse(entry.Added_date_dtm + "T" + entry.Added_time) rescue nil
+  Time.parse(entry.Added_date_dtm + "T" + entry.Added_time)
 end
 
 Dir.chdir(__dir__)
