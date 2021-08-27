@@ -93,7 +93,7 @@ end
 ### Maintain database.
 
 database = File.exists?("database") ? JSON.parse(File.read("database")).map { |r| Entry.new(r) } : []
-merge(database, parsed["result"]["records"].flat_map { |r| p r; r["Added_date_dtm"] ? [Entry.new(r)] : [] }.reverse)
+merge(database, parsed["result"]["records"].flat_map { |r| r["Added_date_dtm"] ? [Entry.new(r)] : [] }.reverse)
 database.each.with_index { |e, i| e.database_id = i + 1 }
 File.write("database", database.to_json)
 
