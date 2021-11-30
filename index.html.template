@@ -1,9 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=US-ASCII">
 	<meta charset="utf-8">
 	<title>Victorian Coronavirus exposure sites RSS feed</title>
-	<link rel="alternative" type="application/atom+xml" href="https://vicexposurerss.kivikakk.ee/atom.xml">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<link rel="stylesheet" href="styles.css">
 </head>
@@ -11,33 +11,29 @@
 	<h1>Victorian Coronavirus exposure sites RSS feed</h1>
 
 	<p>
-		<a href="atom.xml">Atom feed</a><br>
-		Latest exposure site added: <span id="latest-exposure-site"></span><br>
-		Last checked: <span id="last-checked"></span><br>
-		Checking for updates every ten minutes
+		<s>
+			Atom feed<br>
+			Latest exposure site added: <span id="latest-exposure-site">2021-11-14 19:40:00 +1100</span><br>
+			Last checked: <span id="last-checked">2021-12-01 01:00:00 +1100</span><br>
+			Checking for updates every ten minutes
+		</s>
 	</p>
 
 	<p>
-		<strong>Note:</strong>
-		there are no unique identifiers given per listed exposure site/period.
-		As a result, I take a cautious stance and treat any change in any
-		displayed field as representing a new exposure and generate an entry
-		for it.
-		You may see the same exposure reappear as new if our friends at the
-		Department of Health twiddle spelling or addresses.
+		<strong>Exposure sites are no longer being published</strong>.
+	</p>
+
+	<p>
+		See <a href="https://www.coronavirus.vic.gov.au/case-alerts-public-exposure-sites#new-exposure-sites-will-no-longer-be-published">https://www.coronavirus.vic.gov.au/case-alerts-public-exposure-sites#new-exposure-sites-will-no-longer-be-published</a> for more details.
 	</p>
 
 	<p>
 		For more information on the Coronavirus in Victoria, please see
 		<strong><a href="https://www.coronavirus.vic.gov.au">www.coronavirus.vic.gov.au</a></strong>.
-	</p>
-
-	<p>
-		And when you can, please <a href="https://www.coronavirus.vic.gov.au/book-your-vaccine-appointment">get vaccinated</a>.
+		<a href="https://www.coronavirus.vic.gov.au/book-your-vaccine-appointment">Get vaccinated</a>.
 	</p>
 
 	<p><a href="https://github.com/kivikakk/vicexposurerss">Source code on GitHub</a></p>
-	<p><a href="https://www.coronavirus.vic.gov.au/exposure-sites">Data source</a></p>
 	<p><a href="https://kivikakk.ee">Author information</a> (<a href="https://www.youtube.com/watch?v=83cEEyTuAMM">previously</a>)</p>
 
 	<noscript>
@@ -45,4 +41,5 @@
 	</noscript>
 	<script defer src="https://analytics.kameliya.ee/ingress/0f516b8a-6021-4804-946b-419efc68a59a/script.js"></script>
 </body>
-<html>
+
+</html>
